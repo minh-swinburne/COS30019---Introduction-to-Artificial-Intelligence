@@ -213,6 +213,7 @@ class Agent:
     return min(self.goals, key=lambda goal: agent.manhattan_distance(goal))
 
 
+# Test the classes
 if __name__ == "__main__":
   from map import *
   grid_size, agent_loc, goal_locs, walls = load_map()

@@ -19,7 +19,7 @@ def search(agent:'Agent', limit:int=10**5) -> list[str]:
   def dls(src:'Cell', current:'Cell', target:'Cell', max_depth:int, map:'Grid', visited:set) -> bool:
     nonlocal count, limit
     
-    # print("Depth:", max_depth, "- Current:", current.location, "<= ", current.parent, "- Neighbors: ", map.get_neighbors(current))
+    print("Depth:", max_depth, "- Current:", current.location, "<= ", current.parent, "- Neighbors: ", map.get_neighbors(current))
     
     if current == target:
       # print("Found target:", target.location)

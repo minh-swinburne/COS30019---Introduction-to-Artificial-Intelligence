@@ -1,4 +1,4 @@
-import sys
+import sys, os
 # Function to import needed search algorithm
 from importlib import import_module
 # Functions to handle map files
@@ -29,11 +29,15 @@ try:
     if limit_str != "" and type(eval(limit_str)) == int:
       limit = int(limit_str)
       
+  # Suppress the output of the search algorithm (it is dedicated to the GUI)
+  sys.stdout = open(os.devnull, "w")
   if limit != 0:
     result = algorithm.search(agent, limit)
   else:
     result = algorithm.search(agent)
   
+  # Restore the standard output
+  sys.stdout = sys.__stdout__
   # Print the result of the search
   print(filename, method)
   if type(result) == dict: # A goal is found
@@ -48,8 +52,7 @@ except IndexError:
   print("Example: 'python search.py RobotNav-test.txt dfs')")
   
 # In case of inexistent map file
-except FileNotFoundError: 
-  import os
+except FileNotFoundError:
   directory = os.path.dirname(__file__)
   map_dir = os.path.join(directory, 'maps')
   print("Map file not found. Available maps are:", os.listdir(map_dir))

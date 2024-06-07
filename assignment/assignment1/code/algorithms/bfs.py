@@ -60,9 +60,9 @@ if __name__ == "__main__":
   from environment import *
   from map import *
   
-  for file in os.listdir(os.path.join(directory, "maps")):
-    print(file)
-    grid_size, agent_loc, goal_locs, walls = load_map(file)
+  for filename in os.listdir(os.path.join(directory, "maps")):
+    print(filename)
+    grid_size, agent_loc, goal_locs, walls = load_map(filename)
     map = Grid(grid_size, walls)
     agent = Agent(map, agent_loc, goal_locs)
     print_map(grid_size, agent_loc, goal_locs, walls)
