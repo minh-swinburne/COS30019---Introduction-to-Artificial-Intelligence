@@ -7,4 +7,7 @@ class language(Enum):
     Python = auto() 
     HTML = auto() 
   
-print(list(language)) 
+print(list(language))
+print("Hmm\n\
+Hey there\
+Hello")

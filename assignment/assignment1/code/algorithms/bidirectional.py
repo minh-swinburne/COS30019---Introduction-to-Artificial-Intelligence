@@ -256,9 +256,9 @@ if __name__ == "__main__":
   sys.path.append(directory)
 
   from environment import *
-  from map import *
+  from utils import *
   
-  for file in os.listdir(os.path.join(directory, "maps")):
+  for file in get_available_maps():
     print(file)
     grid_size, agent_loc, goal_locs, walls = load_map(file)
     map = Grid(grid_size, walls)

@@ -5,15 +5,41 @@ Functions:
   - load_map(file_name: str) -> Tuple[Tuple[int, int], Tuple[int, int], List[Tuple[int, int]], List[Tuple[int, int, int, int]]]
   - print_map(grid_size: Tuple[int, int], agent_loc: Tuple[int, int], goal_locs: List[Tuple[int, int]], walls: List[Tuple[int, int, int, int]]) -> None
 """
-
-from os import path
+import os
+# Function to list all modules in a package
+from pkgutil import iter_modules
 
 FILENAME = "RobotNav-test.txt"
-
 FREE = '0'
 AGENT = 'A'
 GOAL = 'G'
 WALL = '1'
+
+
+def get_available_maps():
+  """
+  Get the list of available map files in the "maps" folder.
+  
+  Returns:
+    list[str]: A list of map file names.
+  """
+  directory = os.path.dirname(__file__)
+  map_dir = os.path.join(directory, "maps")
+  return os.listdir(map_dir)
+
+
+def get_available_algorithms():
+  """
+  Get the list of available algorithm files in the "algorithms" folder.
+  
+  Returns:
+    list[str]: A list of algorithm file names.
+  """
+  directory = os.path.dirname(__file__)
+  alg_dir = os.path.join(directory, "algorithms")
+  modules = [name for _, name, _ in iter_modules([alg_dir])]
+  return modules
+
 
 def load_map(file_name=FILENAME):
   """
@@ -28,9 +54,9 @@ def load_map(file_name=FILENAME):
     list[tuple[int, int]]: goal locations
     list[tuple[int, int, int, int]]: wall locations
   """
-  dir_path = path.dirname(__file__)
-  dir_path = path.join(dir_path, "maps")
-  file_path = path.join(dir_path, file_name)
+  dir_path = os.path.dirname(__file__)
+  dir_path = os.path.join(dir_path, "maps")
+  file_path = os.path.join(dir_path, file_name)
   with open(file_path) as f:
     grid_size = f.readline().strip()    # This is a list of grid dimensions
     grid_size = eval(grid_size)
@@ -83,8 +109,17 @@ def print_map(grid_size, agent_loc, goal_locs, walls, end="\n"):
   print(end, end="")
   
   
+def suggest_help():
+  """
+  Suggest the user to use the help option of search.py.
+  
+  Returns:
+    None
+  """
+  print("\nFor more information, use the help option: 'python search.py help'\n")
+  
 if __name__ == "__main__":  
   result = grid_size, agent_loc, goal_locs, walls = load_map("no_goal.txt")
   print_map(*result)
-  # print(result)
-  
+  print("Available maps:", get_available_maps())
+  print("Available algorithms:", get_available_algorithms())

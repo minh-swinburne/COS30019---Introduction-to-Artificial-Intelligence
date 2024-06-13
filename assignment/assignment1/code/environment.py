@@ -241,7 +241,7 @@ class Agent:
 
 
 if __name__ == "__main__":
-  from map import *
+  from utils import *
   grid_size, agent_loc, goal_locs, walls = load_map()
   map = Grid(grid_size, walls)
   agent = Agent(map, agent_loc, goal_locs)
