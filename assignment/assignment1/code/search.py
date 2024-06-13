@@ -44,7 +44,7 @@ try:
     
 # In case of missing arguments
 except IndexError:
-  print("Please provide the name of the map file and search algorithm with this format: 'python search.py <filename> <method>'")
+  print("Please provide the name of the map file and search algorithm using this command format: 'python search.py <filename> <method>'")
   print("Example: 'python search.py RobotNav-test.txt dfs')")
   
 # In case of inexistent map file

@@ -1,8 +1,10 @@
 """
 Beam search algorithm (informed)
+
+Modified from the A* search algorithm to use a beam width to limit the number of cells to explore.
 """
 
-def search(agent:'Agent', beam_width:int=2) -> list[str]:
+def search(agent:'Agent', beam_width:int=2) -> dict[list[str], 'Cell', int] | int:
   """
   Perform beam search to find the shortest path from the agent's location to the goal.
   

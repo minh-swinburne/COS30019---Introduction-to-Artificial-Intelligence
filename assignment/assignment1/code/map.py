@@ -2,8 +2,8 @@
 Handles the loading and printing of the map from a text file.
 
 Functions:
-  load_map(file_name: str) -> Tuple[Tuple[int, int], Tuple[int, int], List[Tuple[int, int]], List[Tuple[int, int, int, int]]]
-  print_map(grid_size: Tuple[int, int], agent_loc: Tuple[int, int], goal_locs: List[Tuple[int, int]], walls: List[Tuple[int, int, int, int]]) -> None
+  - load_map(file_name: str) -> Tuple[Tuple[int, int], Tuple[int, int], List[Tuple[int, int]], List[Tuple[int, int, int, int]]]
+  - print_map(grid_size: Tuple[int, int], agent_loc: Tuple[int, int], goal_locs: List[Tuple[int, int]], walls: List[Tuple[int, int, int, int]]) -> None
 """
 
 from os import path
@@ -50,7 +50,7 @@ def load_map(file_name=FILENAME):
   return grid_size, agent_loc, goal_locs, walls
 
 
-def print_map(grid_size, agent_loc, goal_locs, walls):
+def print_map(grid_size, agent_loc, goal_locs, walls, end="\n"):
   """
   Print the map to the console.
   
@@ -80,6 +80,7 @@ def print_map(grid_size, agent_loc, goal_locs, walls):
         if not is_wall:
           print(FREE, end="")
     print()
+  print(end, end="")
   
   
 if __name__ == "__main__":  

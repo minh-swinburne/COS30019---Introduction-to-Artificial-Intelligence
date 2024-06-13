@@ -2,9 +2,9 @@
 Classes to represent the environment, including Cell, Grid and Agent.
 
 Classes:
-  Cell: A class to represent a cell in the grid.
-  Grid: A class to represent a grid.
-  Agent: A class to represent an agent in the grid.
+  - Cell: A class to represent a cell in the grid.
+  - Grid: A class to represent a grid.
+  - Agent: A class to represent an agent in the grid.
 """
 
 class Cell:
@@ -12,25 +12,25 @@ class Cell:
   A class to represent a cell in the grid.
   
   Attributes:
-    x (int): The x coordinate of the cell.
-    y (int): The y coordinate of the cell.
-    parent (Cell): The parent cell of the current cell.
-    g (int): The distance from the start node.
-    h (int): The distance from the end node.
-    blocked (bool): The blocked status of the cell.
+    - x (int): The x coordinate of the cell.
+    - y (int): The y coordinate of the cell.
+    - parent (Cell): The parent cell of the current cell.
+    - g (int): The distance from the start node.
+    - h (int): The distance from the end node.
+    - blocked (bool): The blocked status of the cell.
     
   Methods:
-    __eq__(self, other) -> bool: Compare the cell with another cell based on their locations.
-    __hash__(self): Return the hash value of the cell.
-    __sub__(self, other) -> str: Get the direction from the current cell to another.
-    __repr__(self): Return the string representation
-    manhattan_distance(self, other) -> int: Calculate the Manhattan distance between the current cell and another cell.
+    - __eq__(self, other) -> bool: Compare the cell with another cell based on their locations.
+    - __hash__(self): Return the hash value of the cell.
+    - __sub__(self, other) -> str: Get the direction from the current cell to another.
+    - __repr__(self): Return the string representation
+    - manhattan_distance(self, other) -> int: Calculate the Manhattan distance between the current cell and another cell.
   
   Properties:
-    location -> tuple[int, int]: Return the location of the cell as a tuple (x, y).
-    f -> int: Calculate the total cost of the cell - sum of g and h.
+    - location -> tuple[int, int]: Return the location of the cell as a tuple (x, y).
+    - f -> int: Calculate the total cost of the cell - sum of g and h.
   """
-  def __init__(self, x: int, y: int, parent: 'Cell' = None):
+  def __init__(self, x:int, y:int, parent:'Cell'=None):
     self.x = x  # x coordinate
     self.y = y  # y coordinate
     self.parent = parent    # Parent cell
@@ -39,7 +39,7 @@ class Cell:
     # self.f = 0  # Total cost
     self.blocked = False  # Blocked status
     
-  def __eq__(self, other: 'Cell'):
+  def __eq__(self, other:'Cell'):
     """
     Compare the cell with another cell based on their locations.
     """
@@ -51,7 +51,7 @@ class Cell:
     """
     return hash((self.x, self.y))
   
-  def __sub__(self, other: 'Cell') -> str:
+  def __sub__(self, other:'Cell') -> str:
     """
     Subtract the x and y coordinates of the current cell from the x and y coordinates of another cell.
     @return: The direction from the current cell to the other cell.
@@ -67,11 +67,30 @@ class Cell:
     """
     return f"<Cell ({self.x}, {self.y})>"
   
-  def manhattan_distance(self, other: 'Cell') -> int:
+  def __lt__(self, other:'Cell') -> bool:
+    """
+    Compare the cell with another cell based on their total cost.
+    """
+    return self.f < other.f
+  
+  def __gt__(self, other:'Cell') -> bool:
+    """
+    Compare the cell with another cell based on their total cost.
+    """
+    return self.f > other.f
+  
+  def manhattan_distance(self, other:'Cell') -> int:
     """
     Calculate the Manhattan distance between the current cell and another cell.
     """
     return abs(self.x - other.x) + abs(self.y - other.y)
+  
+  def reset(self):
+    """
+    Reset the cell properties.
+    """
+    self.g = self.h = 0
+    self.parent = None
   
   @property
   def location(self):
@@ -93,18 +112,18 @@ class Grid:
   A class to represent a grid.
   
   Attributes:
-    height (int): The height of the grid.
-    width (int): The width of the grid.
-    grid (list[list[Cell]]): A 2D list of cells representing the grid.
+    - height (int): The height of the grid.
+    - width (int): The width of the grid.
+    - grid (list[list[Cell]]): A 2D list of cells representing the grid.
     
   Methods:
-    get_cell(self, location: tuple[int, int]) -> Cell: Get the cell at the given coordinates.
-    is_valid(self, x: int, y: int) -> bool: Check if the cell at the given coordinates is valid.
-    get_neighbors(self, cell: Cell) -> list[Cell]: Get the neighbors of the cell at the given coordinates.
+    - get_cell(self, location: tuple[int, int]) -> Cell: Get the cell at the given coordinates.
+    - is_valid(self, x: int, y: int) -> bool: Check if the cell at the given coordinates is valid.
+    - get_neighbors(self, cell: Cell) -> list[Cell]: Get the neighbors of the cell at the given coordinates.
     
   Properties:
-    size -> tuple[int, int]: Return the size of the grid as a tuple (height, width).
-    net_area -> int: Calculate the net area of the grid (total area - blocked area).
+    - size -> tuple[int, int]: Return the size of the grid as a tuple (height, width).
+    - net_area -> int: Calculate the net area of the grid (total area - blocked area).
   """
   def __init__(self, size: tuple[int, int], walls: list[tuple[int, int, int, int]]):
     self.height, self.width = size
@@ -148,6 +167,14 @@ class Grid:
           
     return neighbors
   
+  def reset(self):
+    """
+    Reset all cells in the grid.
+    """
+    for row in self.grid:
+      for cell in row:
+        cell.reset()
+  
   @property
   def size(self):
     """
@@ -168,13 +195,13 @@ class Agent:
   A class to represent an agent in the grid.
   
   Attributes:
-    map (Grid): The grid object.
-    cell (Cell): The cell object representing the agent's location.
-    goals (list[Cell]): A list of cell objects representing the goal locations.
+    - map (Grid): The grid object.
+    - cell (Cell): The cell object representing the agent's location.
+    - goals (list[Cell]): A list of cell objects representing the goal locations.
     
   Methods:
-    trace_path(self, cell: Cell, backward=True) -> list[str]: Given the goal cell, return the path from the start cell to the goal cell as a list of directions (up, down, left, right).
-    get_nearest_goal(self) -> tuple[int, int]: Get the nearest goal to the agent's current location (Manhattan distance).
+    - trace_path(self, cell: Cell, backward=True) -> list[str]: Given the goal cell, return the path from the start cell to the goal cell as a list of directions (up, down, left, right).
+    - get_nearest_goal(self) -> tuple[int, int]: Get the nearest goal to the agent's current location (Manhattan distance).
   """
   def __init__(self, map: Grid, location: tuple[int, int], goals: list[tuple[int, int]]):
     self.map = map
@@ -189,11 +216,11 @@ class Agent:
     Given the goal cell, return the path from the start cell to the goal cell as a list of directions (up, down, left, right).
     
     Args:
-      cell (Cell): The goal cell.
-      backward (bool): The direction of the path.
+      - cell (Cell): The goal cell.
+      - backward (bool): The direction of the path.
       
     Returns:
-      list[str]: A list of directions (up, down, left, right) to reach the goal cell.
+      - list[str]: A list of directions (up, down, left, right) to reach the goal cell.
     """
     path = []
     while cell.parent:
@@ -205,7 +232,7 @@ class Agent:
       cell = cell.parent
     return path
   
-  def get_nearest_goal(self) -> tuple[int, int]:
+  def get_nearest_goal(self) -> Cell:
     """
     Get the nearest goal to the agent's current location (Manhattan distance).
     """
