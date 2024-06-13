@@ -1,0 +1,6 @@
+Optimizations:
+- Use deque from the collections module for the queue to achieve O(1) time complexity for pop operations
+- Use a priority queue (heapq) for GBFS and A* to improve performance because using a list for `open_list` and repeatedly using `min()` to find the cell with the lowest `f` value can be inefficient.
+- Check for goal while examining neighbors
+- For IDDFS, pass a visited set as an argument to keep record of visited cells for each depth
+- For GUI
