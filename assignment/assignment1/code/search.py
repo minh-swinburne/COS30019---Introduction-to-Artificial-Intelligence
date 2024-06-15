@@ -2,7 +2,7 @@ import sys
 # Functions to handle map files
 from utils import *
 # Classes of the environment
-from environment import *
+from classes import *
 # Function to import needed search algorithm
 from importlib import import_module
 
@@ -38,7 +38,7 @@ try:
     print("\nCommand Format: 'python search.py <filename> <algorithm> [tags]'")
     print("Example:\
       \n\t'python search.py RobotNav-test.txt dfs',\
-      \n\t'python search.py .\map_2.txt iddfs -l 10000',\
+      \n\t'python search.py .\\map_2.txt iddfs -l 10000',\
       \n\t'python search.py no_goal.txt bfs -a -j'")
     
     print()
@@ -49,13 +49,11 @@ try:
   # Load the map and create the agent
   size, agent_loc, goal_locs, walls = load_map(filename)
   map = Grid(size, walls)
-  agent = Agent(map, agent_loc, goal_locs)
+  agent = Agent(map, agent_loc, goal_locs, can_jump="-j" in args)
   
   # Import the desired search algorithm from the algorithms package
   algorithm = import_module(name="algorithms." + algorithm_name)
   
-  search_type = "search_all" if "-a" in args else "search"
-  search_type = getattr(algorithm, search_type)
   # search_type = "search_jps" if "-j" in args else search_type
   limit = 0
   
@@ -71,9 +69,9 @@ try:
         limit = 10**5
       
   if limit != 0:
-    result = search_type(agent=agent,limit=limit)
+    result = algorithm.search(agent=agent,limit=limit, all="-a" in args)
   else:
-    result = search_type(agent=agent)
+    result = algorithm.search(agent=agent, all="-a" in args)
   
   # Print the result of the search
   print(filename, algorithm_name)

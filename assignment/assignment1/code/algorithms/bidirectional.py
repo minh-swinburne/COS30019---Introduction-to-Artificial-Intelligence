@@ -28,7 +28,7 @@ def search(agent:'Agent') -> dict[list[str], 'Cell', int] | int:
     If no path is found:
       int: The number of cells visited during the search.
   """
-  agent.map.reset()
+  agent.grid.reset()
   start = agent.cell
   # If the start cell is a goal, return an empty path immediately
   if start in agent.goals:
@@ -74,7 +74,7 @@ def search(agent:'Agent') -> dict[list[str], 'Cell', int] | int:
     # print(f"Current Start: {current_start} <= {current_start.parent} - Current Goal: {current_goal} <= {current_goal.parent}\n")
     
     # Explore the neighbors of the current start
-    for neighbor in agent.map.get_neighbors(current_start):
+    for neighbor in agent.grid.get_neighbors(current_start):
       if neighbor.blocked or neighbor in closed_set_start:
         continue
       
@@ -103,7 +103,7 @@ def search(agent:'Agent') -> dict[list[str], 'Cell', int] | int:
         # Reheapify the open list after updating the g value
         heapq.heapify(open_list_start)
     
-    for neighbor in agent.map.get_neighbors(current_goal):
+    for neighbor in agent.grid.get_neighbors(current_goal):
       if neighbor.blocked or neighbor in closed_set_goal:
         continue
       
@@ -148,7 +148,7 @@ def search_all(agent:'Agent') -> dict[list[str], 'Cell', int] | int:
     If no path is found:
       int: The number of cells visited during the search.
   """
-  agent.map.reset()
+  agent.grid.reset()
   start = agent.cell
   goal = agent.get_nearest_goal()
   
@@ -175,7 +175,7 @@ def search_all(agent:'Agent') -> dict[list[str], 'Cell', int] | int:
     
     found_goal = False
     
-    for neighbor in agent.map.get_neighbors(current_start):
+    for neighbor in agent.grid.get_neighbors(current_start):
       if neighbor.blocked or neighbor in closed_set_start:
         continue      
       tentative_g = current_start.g + 1
@@ -199,7 +199,7 @@ def search_all(agent:'Agent') -> dict[list[str], 'Cell', int] | int:
         neighbor.parent = current_start
         heapq.heapify(open_list_start)
     
-    for neighbor in agent.map.get_neighbors(current_goal):
+    for neighbor in agent.grid.get_neighbors(current_goal):
       if neighbor.blocked or neighbor in closed_set_goal:
         continue      
       tentative_g = current_goal.g + 1
@@ -232,7 +232,7 @@ def search_all(agent:'Agent') -> dict[list[str], 'Cell', int] | int:
           'goal': goals,
           'count': count
         }
-      agent.map.reset()
+      agent.grid.reset()
       agent.cell = goal
       start = agent.cell
       goal = agent.get_nearest_goal()

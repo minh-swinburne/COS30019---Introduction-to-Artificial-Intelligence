@@ -28,7 +28,7 @@ def search(agent:'Agent') -> dict[list[str], 'Cell', int] | int:
     If no path is found:
       int: The number of cells visited during the search.
   """
-  agent.map.reset()
+  agent.grid.reset()
   start = agent.cell
   # If the start cell is a goal, return an empty path immediately
   if start in agent.goals:
@@ -65,7 +65,7 @@ def search(agent:'Agent') -> dict[list[str], 'Cell', int] | int:
         'count': count
       }
     
-    for neighbor in agent.map.get_neighbors(current):
+    for neighbor in agent.grid.get_neighbors(current):
       if neighbor.blocked or neighbor in closed_set:
         continue
       if neighbor not in [cell for _, cell in open_list]:
@@ -96,7 +96,7 @@ def search_all(agent:'Agent') -> dict[list[str], 'Cell', int] | int:
     If no path is found:
       int: The number of cells visited during the search.
   """
-  agent.map.reset()
+  agent.grid.reset()
   start = agent.cell
   goal = agent.get_nearest_goal()
   start.h = start.manhattan_distance(goal)
@@ -140,7 +140,7 @@ def search_all(agent:'Agent') -> dict[list[str], 'Cell', int] | int:
       # print("Next goal:", goal)
       continue
     
-    for neighbor in agent.map.get_neighbors(current):
+    for neighbor in agent.grid.get_neighbors(current):
       if neighbor.blocked or neighbor in closed_set:
         continue
       if neighbor not in [cell for _, cell in open_list]:
