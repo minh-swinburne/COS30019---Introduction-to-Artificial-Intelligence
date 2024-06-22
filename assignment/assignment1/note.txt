@@ -4,3 +4,10 @@ Optimizations:
 - Check for goal while examining neighbors
 - For IDDFS, pass a visited set as an argument to keep record of visited cells for each depth
 - For GUI
+
+
+Questions:
+- Are custom algorithms accepted? (IDDFS for uninformed, Bidirectional A* for informed)
+- Nodes created are not really created (they are just visited)
+- How to design test cases? (Use different maps?)
+- 

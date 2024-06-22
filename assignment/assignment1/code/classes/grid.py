@@ -5,19 +5,21 @@ class Grid:
     """
     A 2D grid containing cells.
 
-    Attributes:
+    ### Attributes:
         - height (int): The height of the grid.
         - width (int): The width of the grid.
         - grid (list[list[Cell]]): A 2D list of cells representing the grid.
 
-    Methods:
-        - get_cell(self, location: tuple[int, int]) -> Cell: Get the cell at the given coordinates.
-        - is_valid(self, x:int, y:int) -> bool: Check if the cell at the given coordinates is valid.
-        - get_neighbors(self, cell: Cell) -> list[Cell]: Get the neighbors of the cell at the given coordinates.
+    ### Methods:
+        - is_valid(self, x, y) -> bool: Check if the cell at the given coordinates is valid.
+        - get_cell(self, location) -> Cell: Get the cell at the given coordinates.
+        - get_neighbor(self, cell, direction, distance - optional) -> Cell: Get the neighbor of the cell at the given direction and distance.
+        - get_neighbors(self, cell, can_jump - optional) -> list[Cell]: Get all neighbors of the given cell.
+        - reset(self): Reset all cells in the grid.
 
-    Properties:
-        - size -> tuple[int, int]: Return the size of the grid as a tuple (height, width).
-        - net_area -> int: Calculate the net area of the grid (total area - blocked area).
+    ### Properties:
+        - size (tuple[int, int]): Return the size of the grid as a tuple (height, width).
+        - net_area (int): Calculate the net area of the grid (total area - blocked area).
     """
     def __init__(self, size: tuple[int, int], walls: list[tuple[int, int, int, int]]):
         self.height, self.width = size
@@ -30,43 +32,43 @@ class Grid:
                 for col in range(start_x, start_x + width):
                     self.grid[row][col].blocked = True
 
-    def get_cell(self, location:tuple[int, int]) -> Cell:
-        """
-        Get the cell at the given coordinates.
-        
-        Args:
-            location (tuple[int, int]): The coordinates of the cell.
-            
-        Returns:
-            Cell: The cell at the given coordinates.
-        """
-        x, y = location
-        return self.grid[y][x]
-
     def is_valid(self, x:int, y:int) -> bool:
         """
         Check if the cell at the given coordinates is valid.
         
-        Args:
-            x (int): The x coordinate.
-            y (int): The y coordinate.
+        ### Args:
+            - x (int): The x coordinate.
+            - y (int): The y coordinate.
         
-        Returns:
-            bool: True if the cell is valid, False otherwise.
+        ### Returns:
+            - bool: True if the cell is valid, False otherwise.
         """
         return 0 <= x < self.width and 0 <= y < self.height
+
+    def get_cell(self, location:tuple[int, int]) -> Cell:
+        """
+        Get the cell at the given coordinates.
+        
+        ### Args:
+            - location (tuple[int, int]): The coordinates of the cell.
+            
+        ### Returns:
+            - Cell: The cell at the given coordinates.
+        """
+        x, y = location
+        return self.grid[y][x]
     
     def get_neighbor(self, cell:Cell, direction:Direction, distance:int=1) -> Cell | None:
         """
         Get the neighbor of the cell at the given direction and distance.
 
-        Args:
-            cell (Cell): the cell to get the neighbor from.
-            direction (Direction): the direction of the neighbor.
-            distance (int, optional): the distance from the original cell. Defaults to 1.
+        ### Args:
+            - cell (Cell): the cell to get the neighbor from.
+            - direction (Direction): the direction of the neighbor.
+            - distance (int, optional): the distance from the original cell. Defaults to 1.
 
-        Returns:
-            Cell: the neighbor cell if it is valid, None otherwise.
+        ### Returns:
+            - Cell: the neighbor cell if it is valid, None otherwise.
         """
         x = y = -1
         if direction == Direction.UP:
@@ -81,25 +83,35 @@ class Grid:
             return self.grid[y][x]
         return None
 
-    def get_neighbors(self, cell:Cell, can_jump=False) -> list[Cell]:
+    def get_neighbors(self, cell:Cell, can_jump:bool=False) -> list[Cell]:
         """
-        Get all neighbors of the given cell.
+        Get all neighbors of the given cell. If can_jump is True, allow movement with distance greater than 1.
         
-        Args:
-            cell (Cell): The cell to get the neighbors from.
-            can_jump (bool, optional): Whether to allow movement with distance greater than 1. Defaults to False.
+        ### Args:
+            - cell (Cell): The cell to get the neighbors from.
+            - can_jump (bool, optional): Whether to allow movement with distance greater than 1. Defaults to False.
         
-        Returns:
-            list[Cell]: A list of neighbor cells. Empty list if no neighbors are found.
+        ### Returns:
+            - list[Cell]: A list of neighbor cells. Empty list if no neighbors are found.
         """
             
         neighbors = []
+        max_f = cell.f
+        # print(f"Cell: {cell} - f: {cell.f}")
         # Add neighbors IN ORDER (up, left, down, right) around the cell
         for direction in list(Direction):
             distance = 1
             neighbor = self.get_neighbor(cell, direction, distance)
             while neighbor is not None:
-                neighbors.append(neighbor)
+                if neighbor.g > 0:
+                    neighbor_f = neighbor.jump_cost(cell) + neighbor.h
+                    if neighbor_f > max_f and distance > 2:
+                        # print(f"Neighbor {neighbor} has higher f value {neighbor_f} ({neighbor.jump_cost(cell)} + {neighbor.h}) than the minimum f value {max_f}; Cell: {cell}, jump cost {neighbor.jump_cost(cell)}.")
+                        break
+                    if neighbor.parent is not None:
+                        max_f = neighbor_f
+                if not neighbor.blocked:
+                    neighbors.append(neighbor)
                 if not can_jump:
                     break
                 distance += 1
@@ -119,7 +131,7 @@ class Grid:
 
         return neighbors
 
-    def reset(self):
+    def reset(self) -> None:
         """
         Reset all cells in the grid.
         """
@@ -128,15 +140,16 @@ class Grid:
                 cell.reset()
 
     @property
-    def size(self):
+    def size(self) -> tuple[int, int]:
         """
         Return the size of the grid as a tuple (height, width).
         """
         return self.height, self.width
 
     @property
-    def net_area(self):
+    def net_area(self) -> int:
         """
         Calculate the net area of the grid (total area - blocked area).
         """
         return self.height * self.width - sum(cell.blocked for row in self.grid for cell in row)
+    
