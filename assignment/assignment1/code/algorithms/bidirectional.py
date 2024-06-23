@@ -127,6 +127,7 @@ def search(agent:'Agent', all:bool=False) -> dict[list[str], 'Cell', int] | int:
                 if neighbor.parent:  # If the neighbor has a parent, a path is found
                     # print("Tracing path from current start:", current_start, "to", neighbor)
                     found_goal = True
+                    start.parent = goal.parent = None
                     # Extend the path
                     connect(agent, neighbor.parent, neighbor)
                     path_goal = agent.trace_path(neighbor, backward=False)
@@ -158,6 +159,7 @@ def search(agent:'Agent', all:bool=False) -> dict[list[str], 'Cell', int] | int:
                 if neighbor.parent and not found_goal:
                     # print("Tracing path from current goal:", current_goal, "to", neighbor)
                     found_goal = True
+                    start.parent = goal.parent = None
                     # Extend the path
                     connect(agent, neighbor.parent, neighbor)
                     path_start = agent.trace_path(neighbor)

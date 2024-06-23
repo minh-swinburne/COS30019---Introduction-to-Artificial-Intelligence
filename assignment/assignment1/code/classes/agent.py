@@ -39,7 +39,7 @@ class Agent:
         path = []
         total_cost = 0
         while cell.parent:
-            print(f"Cell: {cell.location} - Parent: {cell.parent.location}")
+            # print(f"Cell: {cell.location} - Parent: {cell.parent.location}")
             distance = cell.manhattan_distance(cell.parent)
             distance_str = f"_{distance}" if self.can_jump else ""
             cost = cell.jump_cost(cell.parent)
